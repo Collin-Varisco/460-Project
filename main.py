@@ -47,10 +47,37 @@ def insertEmployee(conn):
             conn.close()
             print("Connection is closed.")
 
+def addFranchise(conn):
+    try:
+        print("--- Add Franchise Information ---")
+        fid = input("Franchise ID: ")
+        streetAddress = input("Street Address: ")
+        city = input("City: ")
+        state = input("State: ")
+        zipCode = input("Zip Code: ")
+        ownerFname = input("Owner's First Name: ")
+        ownerLname = input("Owner's Last Name: ")
+        franchiseSql = """INSERT INTO Franchise
+                         (FID, StreetAddress, City, State, ZipCode, OwnerFname, OwnerLname)
+                         VALUES (?, ?, ?, ?, ?, ?, ?);"""
+        f_tuple = (fid, streetAddress, city, state, zipCode, ownerFname, ownerLname)
+        c = conn.cursor()
+        c.execute(franchiseSql, f_tuple)
+        conn.commit()
+        c.close()
+    except sqlite.Error as error:
+        print("//")
+        print(error)
+    finally:
+        if conn:
+            conn.close()
+            print("Connection is closed.")
+
 
 def createTableMenu(conn):
     print("--- Options ---")
     print("1. Add an Employee")
+    print("2. Add a Franchise")
     try:
         m_option = int(input(" >> "))
         if(m_option == 1):
@@ -60,6 +87,14 @@ def createTableMenu(conn):
                 optionRepeat = input("Add another employee? (Y/N): ")
                 if(optionRepeat == "N"):
                     repeat = False
+        elif(m_option == 2):
+            repeat = True
+            while(repeat):
+                addFranchise(conn);
+                optionRepeat = input("Add another employee? (Y/N): ")
+                if(optionRepeat == "N"):
+                    repeat = False
+
         else:
             print("--------")
     except ValueError as e:
@@ -96,10 +131,16 @@ def main():
         createTableMenu(conn)
         conn = create_connection(database)
         c = conn.cursor();
+        print("Employee Table")
         check = c.execute("SELECT * FROM Employee").fetchall()
+        print(check)
+        print("---------------------------------------------")
+        print("Franchise Table")
+        check = c.execute("SELECT * FROM Franchise").fetchall()
         print(check);
-    #else:
-    #    print("ERROR: Could not establish database connection.")
+        print("---------------------------------------------")
+    else:
+        print("ERROR: Could not establish database connection.")
 
 if __name__ == '__main__':
     main()
