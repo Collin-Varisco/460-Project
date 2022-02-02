@@ -10,7 +10,6 @@ def create_connection(db):
         print(e)
     return con
 
-connection = create_connection("py.db")
 
 """ create a table from the createSqlTable statement
 :param conn: Connection object
@@ -25,7 +24,7 @@ def createTable(conn, createSqlTable):
         print(e)
 
 def insertEmployee(conn):
-    try: 
+    try:
         print("--- Insert Employee Information ---")
         eid = input("Employee ID: ")
         fname = input("First Name: ")
@@ -47,12 +46,12 @@ def insertEmployee(conn):
         if conn:
             conn.close()
             print("Connection is closed.")
-                                            
+
 
 def createTableMenu(conn):
     print("--- Options ---")
     print("1. Add an Employee")
-    try: 
+    try:
         m_option = int(input(" >> "))
         if(m_option == 1):
             repeat = True
@@ -65,11 +64,11 @@ def createTableMenu(conn):
             print("--------")
     except ValueError as e:
         print(e)
-        
+
 
 def main():
     database = "MovingCompany.db"
-    
+
     create_franchise_table = """CREATE TABLE IF NOT EXISTS Franchise (
                                        FID               integer     PRIMARY KEY,
                                        StreetAddress     text        NOT NULL,
@@ -94,7 +93,8 @@ def main():
     if conn is not None:
         createTable(conn, create_franchise_table)
         createTable(conn, create_employee_table);
-        #createTableMenu(conn)
+        createTableMenu(conn)
+        conn = create_connection(database)
         c = conn.cursor();
         check = c.execute("SELECT * FROM Employee").fetchall()
         print(check);
@@ -103,4 +103,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
